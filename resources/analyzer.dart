@@ -215,10 +215,9 @@ void main(args) async {
   late Directory dir;
   if (args.isEmpty) dir = Directory.current;
   else dir = Directory(args.first);
-  Uri projectDirectoryUri = dir.uri;
   final collection = AnalysisContextCollection(
-    includedPaths: [ctx.normalize(projectDirectoryUri.path)],
-    resourceProvider: resourceProvider
+    includedPaths: [ctx.normalize(dir.path)],
+        resourceProvider: resourceProvider
   );
   final includedDependenciesPaths = <String>[];
   for (final context in collection.contexts) {
@@ -230,7 +229,12 @@ void main(args) async {
       for (final jc in jsonContent["packages"]) {
         var rootUri = jc["rootUri"];
         if (jc.containsKey("packageUri")) {
-          rootUri = ctx.join(rootUri, jc["packageUri"]);
+          // rootUri = ctx.join(rootUri, jc["packageUri"]);
+          if (rootUri == "../") {
+            rootUri = rootUri + jc["packageUri"];
+          } else {
+            rootUri = rootUri + '/' + jc["packageUri"];
+          }
         }
         packages[rootUri] = 'package:' + jc["name"] + '/';
         String normalizedPath = ctx.normalize(ctx.fromUri(rootUri));

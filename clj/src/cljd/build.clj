@@ -169,8 +169,10 @@
          (do
            (newline)
            (println (title "Dumping type information (it may take a while)"))
-           (when (exec {:out (java.lang.ProcessBuilder$Redirect/to lib-info-edn)}
-                       bin "pub" "run" (.getPath analyzer-dart))
+           (when (exec {:out (java.lang.ProcessBuilder$Redirect/to lib-info-edn)} 
+                    bin "pub" "run" (str ".clojuredart"
+                                         (java.io.File/separator)
+                                         "analyzer.dart"))
              (.delete lib-info-edn)
              (System/exit 1))))))))
 
